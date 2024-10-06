@@ -32,6 +32,7 @@ function MovieSearch() {
       } else {
         setError(null);
         setResults(data);
+        console.log(data);
       }
     } catch (err) {
       setError("An error occurred while fetching the results");
