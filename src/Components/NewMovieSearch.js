@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import MovieModal from "./MovieModal";
+import { supabase } from "../supabaseClient";
 
-function MovieSearch() {
+function NewMovieSearch() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
@@ -16,19 +17,42 @@ function MovieSearch() {
     const sanitizedQuery = query.replace(/[^a-zA-Z\s]/g, " ");
 
     try {
-      const response = await fetch(
-        `http://192.168.5.234:5500/api/shows/search?query=${encodeURIComponent(
-          sanitizedQuery
-        )}`
-      );
+      // Use Supabase to perform full-text search
+      // console.log("trying");
+      const formattedQuery = sanitizedQuery.replace(/\s+/g, " & "); // Prepare query for tsquery format
+      // const { data, error } = await supabase
+      //   .from("shows") // Ensure this matches your actual table name
+      //   .select("*")
+      //   .textSearch("search_vector", formattedQuery, { type: "plain" })
+      //   .limit(10);
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch");
+      // console.log(formattedQuery);
+      // console.log("Data returned:", data);
+      // console.log("Error returned:", error);
+
+      // const { data, error } = await supabase
+      //   .from("shows")
+      //   .select()
+      //   .textSearch("name", `'big'`);
+
+      // const { data, error } = await supabase
+      //   .from("shows")
+      //   .select("*")
+      //   .textSearch("name", "big"); // Assuming 'big' is the term you're searching for
+
+      const { data, error } = await supabase
+        .from("shows")
+        .select("*")
+        .textSearch("search_vector", formattedQuery)
+        .limit(15);
+
+      console.log("Supabase Response:", { data, error });
+
+      if (error) {
+        throw new Error("Failed to fetch from Supabase");
       }
 
-      const data = await response.json();
-
-      if (response.status === 404) {
+      if (data.length === 0) {
         setError("No results found");
         setResults([]);
       } else {
@@ -40,7 +64,6 @@ function MovieSearch() {
       setError("An error occurred while fetching the results");
     }
   };
-
   const handleMovieClick = (movie) => {
     setSelectedMovie(movie);
   };
@@ -57,7 +80,7 @@ function MovieSearch() {
 
   return (
     <div className="">
-      <h1 className="">Search for Shows</h1>
+      <h1 className="">Search for Shows SUPA</h1>
       <div className="flex w-full mb-4">
         <input
           className="relative w-full  cols-start-1 cols-end-2 "
@@ -93,4 +116,4 @@ function MovieSearch() {
   );
 }
 
-export default MovieSearch;
+export default NewMovieSearch;

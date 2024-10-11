@@ -1,0 +1,34 @@
+/* src/components/Navbar.css */
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  margin-right: 0px; /* Adjust to remove gap between buttons */
+  margin-bottom: 0.5rem;
+}
+
+.nav-text {
+  z-index: 1;
+}
+
+.nav-line {
+  border-bottom: 0.125rem solid #eb6e34;
+}
+
+.left-bar {
+  border-right: 0.01rem solid #575353;
+  border-top: 0.01rem solid #575353;
+}
+.right-side {
+  border-top: 0.01rem solid #575353;
+  /* border-left: 0.01rem solid #575353; */
+}
+
+.nav-item.bg-blue-500 .nav-triangle {
+  border-left-color: #3b82f6; /* Match the active button color */
+}
+
+.nav-item.bg-gray-600 .nav-triangle {
+  border-left-color: #4b5563; /* Match the inactive button color */
+}
