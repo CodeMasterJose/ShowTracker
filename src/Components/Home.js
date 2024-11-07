@@ -1,5 +1,11 @@
+import DisplayTracked from "./DisplayTracked";
+
 function Home() {
-  return <p>Bruh</p>;
+  return (
+    <div>
+      <DisplayTracked />
+    </div>
+  );
 }
 
 export default Home;

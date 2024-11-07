@@ -1,6 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import TrackShow from "./TrackShow";
 
 function MovieModal({ movie, onClose }) {
+  const [showTracking, setShowTracking] = useState(false);
+
   useEffect(() => {
     const handleEscapeKeyPress = (e) => {
       if (e.key === "Escape") {
@@ -19,6 +22,10 @@ function MovieModal({ movie, onClose }) {
   if (!movie) return null; // Do not render anything if no movie is selected
 
   const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+
+  const handleSaveShow = () => {
+    setShowTracking(true);
+  };
 
   return (
     <div
@@ -59,6 +66,14 @@ function MovieModal({ movie, onClose }) {
           <strong>Popularity:</strong> {movie.popularity}
         </p>
         <button onClick={onClose}>Close</button>
+        {/* <button
+          onClick={handleSaveShow}
+          className="bg-green-500 text-white py-2 px-4 rounded-lg"
+        >
+          Save Show
+        </button>
+        {showTracking && <TrackShow showId={movie.id} />} */}
+        <TrackShow showId={movie.id} />
       </div>
     </div>
   );
