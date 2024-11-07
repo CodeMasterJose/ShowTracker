@@ -17,29 +17,7 @@ function NewMovieSearch() {
     const sanitizedQuery = query.replace(/[^a-zA-Z\s]/g, " ");
 
     try {
-      // Use Supabase to perform full-text search
-      // console.log("trying");
       const formattedQuery = sanitizedQuery.replace(/\s+/g, " & "); // Prepare query for tsquery format
-      // const { data, error } = await supabase
-      //   .from("shows") // Ensure this matches your actual table name
-      //   .select("*")
-      //   .textSearch("search_vector", formattedQuery, { type: "plain" })
-      //   .limit(10);
-
-      // console.log(formattedQuery);
-      // console.log("Data returned:", data);
-      // console.log("Error returned:", error);
-
-      // const { data, error } = await supabase
-      //   .from("shows")
-      //   .select()
-      //   .textSearch("name", `'big'`);
-
-      // const { data, error } = await supabase
-      //   .from("shows")
-      //   .select("*")
-      //   .textSearch("name", "big"); // Assuming 'big' is the term you're searching for
-
       const { data, error } = await supabase
         .from("shows")
         .select("*")

@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import "./Navbar.css";
 //import Leftbar from "./Leftbar";
 import React, { useState, useEffect } from "react";
+import LoginModal from "./LoginModal";
 
 function Header(props) {
   const location = useLocation();
@@ -10,6 +11,16 @@ function Header(props) {
     { label: "Search Series", path: "/search" },
     { label: "Blog", path: "/blog" },
   ];
+
+  const [loginModal, setLoginModal] = useState(false);
+
+  const handleOpenLoginModal = () => {
+    setLoginModal(true);
+  };
+
+  const handleCloseLoginModal = () => {
+    setLoginModal(false);
+  };
 
   return (
     <div className="">
@@ -32,6 +43,15 @@ function Header(props) {
               ))}
             </ul>
           </nav>
+          <div className="col-span-1 justify-self-end">
+            <button
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+              onClick={handleOpenLoginModal}
+            >
+              Login
+            </button>
+          </div>
+          {/* <h1 className="col-span-1 text-white justify-self-end">Test Again</h1> */}
         </div>
       </div>
       {/* <div className="inline-block h-40 bg-gray-900 text-white">
@@ -55,6 +75,7 @@ function Header(props) {
       <div>
         <h1>Bottom</h1>
       </div>
+      {loginModal && <LoginModal onClose={handleCloseLoginModal} />}
     </div>
   );
 }
