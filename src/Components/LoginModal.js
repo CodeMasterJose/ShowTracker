@@ -35,28 +35,34 @@ function LoginModal({ onClose }) {
           className="relative w-full max-w-2xl h-2/3 p-6 bg-white rounded-lg shadow-lg overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
-          <h1>Hello World</h1>
-          <input
-            type="text"
-            placeholder="Username"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="grid space-y-5">
+            <h1 className="justify-self-center">Login</h1>
+            <input
+              className=""
+              type="text"
+              placeholder="Username"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-          <button
-            onClick={handleLogin}
-            className="bg-blue-500 text-white py-2 px-4 rounded-lg mt-2"
-          >
-            Submit
-          </button>
+            <button
+              onClick={handleLogin}
+              className="justify-self-center bg-blue-500 text-white py-2 px-4 rounded-lg mt-2"
+            >
+              Login
+            </button>
+            <button className="justify-self-center bg-orange-500 text-white py-2 px-4 rounded-lg mt-2">
+              Not a user? Sign up
+            </button>
 
-          <button onClick={onClose}>Close</button>
+            <button onClick={onClose}>Close</button>
+          </div>
         </div>
       </div>
     </div>

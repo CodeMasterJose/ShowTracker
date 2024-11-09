@@ -3,6 +3,7 @@ import Home from "./Components/Home";
 import MovieSearch from "./Components/MovieSearch";
 import NewMovieSearch from "./Components/NewMovieSearch";
 import Header from "./Components/Header";
+import Signup from "./Components/Signup";
 import "./index.css";
 import "./App.css";
 
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<NewMovieSearch />} />;
+          <Route path="/signup" element={<Signup />} />;
         </Routes>
       </Header>
     </BrowserRouter>
