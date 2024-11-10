@@ -1,9 +1,9 @@
 import DisplayTracked from "./DisplayTracked";
 
-function Home({ user }) {
+function Home() {
   return (
     <div>
-      <DisplayTracked user={user} /> {/* Passing user to DisplayTracked */}
+      <DisplayTracked />
     </div>
   );
 }

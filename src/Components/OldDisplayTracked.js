@@ -1,26 +1,26 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 
-function DisplayTracked({ user }) {
-  // accepting user as a prop
+function DisplayTracked() {
   const [results, setResults] = useState([]);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchShowTracked = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       if (!user) {
         setError("Please log in to track shows.");
-        setResults([]);
         return;
       }
 
       try {
         const { data, error } = await supabase
           .from("tracked_shows")
-          .select("show:show_id(*)")
-          .eq("user_id", user.id); // filtering by logged-in user
-
+          .select("show:show_id(*)");
         if (error) {
           setError(error.message);
         } else {
@@ -30,12 +30,12 @@ function DisplayTracked({ user }) {
         }
       } catch (err) {
         setError("An unexpected error occurred.");
-        console.log("Error ", err);
+        console.log("Error ");
       }
     };
 
     fetchShowTracked();
-  }, [user]); // refetch whenever the user changes
+  }, []);
 
   return (
     <div>
@@ -50,5 +50,4 @@ function DisplayTracked({ user }) {
     </div>
   );
 }
-
 export default DisplayTracked;

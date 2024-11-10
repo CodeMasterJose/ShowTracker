@@ -1,11 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import "./Navbar.css";
+//import Leftbar from "./Leftbar";
 import React, { useState, useEffect } from "react";
-import { supabase } from "../supabaseClient";
 import LoginModal from "./LoginModal";
 import SignoutModal from "./SignoutModal";
 
-function Header({ user, setUser, ...props }) {
+function Header(props) {
   const location = useLocation();
   const navItems = [
     { label: "Home", path: "/" },
@@ -15,24 +15,6 @@ function Header({ user, setUser, ...props }) {
 
   const [loginModal, setLoginModal] = useState(false);
   const [signoutModal, setSignoutModal] = useState(false);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user); // setting user state in App.js
-    };
-
-    fetchUser();
-    const { data: authListener } = supabase.auth.onAuthStateChange(() => {
-      fetchUser();
-    });
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, [setUser]);
 
   const handleOpenLoginModal = () => {
     setLoginModal(true);
@@ -55,7 +37,7 @@ function Header({ user, setUser, ...props }) {
       <div className="bg-cyan-700">
         <div className="grid grid-cols-3 items-stretch p-4">
           <h1 className="col-span-1 text-white">Show Tracker</h1>
-          <nav className="col-span-1 text-white flex justify-center">
+          <nav className=" col-span-1 text-white flex justify-center">
             <ul className="flex">
               {navItems.map((item) => (
                 <NavItem
@@ -68,21 +50,18 @@ function Header({ user, setUser, ...props }) {
             </ul>
           </nav>
           <div className="col-span-1 justify-self-end">
-            {!user ? (
-              <button
-                className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
-                onClick={handleOpenLoginModal}
-              >
-                Login
-              </button>
-            ) : (
-              <button
-                className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
-                onClick={handleOpenSignoutModal}
-              >
-                Sign Out
-              </button>
-            )}
+            <button
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+              onClick={handleOpenLoginModal}
+            >
+              Login
+            </button>
+            <button
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+              onClick={handleOpenSignoutModal}
+            >
+              Sign Out
+            </button>
           </div>
         </div>
       </div>
@@ -96,21 +75,18 @@ function Header({ user, setUser, ...props }) {
       <div>
         <h1>Bottom</h1>
       </div>
-      {loginModal && (
-        <LoginModal onClose={handleCloseLoginModal} setUser={setUser} />
-      )}{" "}
-      {/* passing setuser to loginmodal */}
+      {loginModal && <LoginModal onClose={handleCloseLoginModal} />}
       {signoutModal && <SignoutModal onClose={handleCloseSignoutModal} />}
     </div>
   );
 }
-
-const NavItem = ({ label, path, active }) => (
-  <li className={`nav-item ${active ? " nav-line animate-pulse" : ""}`}>
-    <Link to={path} className="nav-text">
-      {label}
-    </Link>
-  </li>
-);
-
+const NavItem = ({ label, path, active }) => {
+  return (
+    <li className={`nav-item ${active ? " nav-line animate-pulse" : ""}`}>
+      <Link to={path} className="nav-text">
+        {label}
+      </Link>
+    </li>
+  );
+};
 export default Header;

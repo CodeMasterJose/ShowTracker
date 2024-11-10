@@ -1,25 +1,23 @@
-import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./Components/Home";
-import Header from "./Components/Header";
 import MovieSearch from "./Components/MovieSearch";
 import NewMovieSearch from "./Components/NewMovieSearch";
+import Header from "./Components/Header";
+import Signup from "./Components/Signup";
 import "./index.css";
 import "./App.css";
 
 function App() {
-  const [user, setUser] = useState(null); // State for user login
-
   return (
     <BrowserRouter>
-      <Header user={user} setUser={setUser}>
+      <Header>
         <Routes>
-          <Route path="/" element={<Home user={user} />} />
-          <Route path="/search" element={<NewMovieSearch />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/search" element={<NewMovieSearch />} />;
+          <Route path="/signup" element={<Signup />} />;
         </Routes>
       </Header>
     </BrowserRouter>
   );
 }
-
 export default App;
