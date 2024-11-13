@@ -59,16 +59,19 @@ function NewMovieSearch() {
   return (
     <div className="">
       <h1 className="">Search for Shows SUPA</h1>
-      <div className="flex w-full mb-4">
+      <div className="flex w-full mb-4 space-x-2">
         <input
-          className="relative w-full  cols-start-1 cols-end-2 "
+          className="w-full py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Enter movie name or part of overview"
           onKeyUp={handleKeyPress}
         />
-        <button className="cols-start-3 cols-end-3" onClick={handleSearch}>
+        <button
+          className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 cols-start-3 cols-end-3"
+          onClick={handleSearch}
+        >
           Search
         </button>
       </div>
