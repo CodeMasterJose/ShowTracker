@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 import UntrackShow from "./UntrackShow";
+import DropdownMenu from "./DropDownMenu";
 
 function DisplayTracked({ user }) {
   // State variables to manage data and errors
@@ -8,6 +9,52 @@ function DisplayTracked({ user }) {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true); // Track loading state
+
+  const ratingMenuItems = [
+    { label: "Empty" },
+    { label: "In Progress" },
+    { label: "Done" },
+    { label: "Planning to Watch" },
+  ];
+
+  const numToStatus = (e) => {
+    if (e === 0) {
+      return "Empty";
+    } else if (e === 1) {
+      return "In Progress";
+    } else if (e === 2) {
+      return "Done";
+    } else {
+      return "Planning to Watch";
+    }
+  };
+
+  const updatePersonalStatus = async (showId, newStatus) => {
+    try {
+      const { error } = await supabase
+        .from("tracked_shows")
+        .update({ personal_review: newStatus })
+        .eq("show_id", showId)
+        .eq("user_id", user.id);
+
+      if (error) {
+        console.error("Error updating personal status", error);
+        setError("Failed to update personal status");
+      } else {
+        setSuccess(true);
+        setResults((prevResults) =>
+          prevResults.map((item) =>
+            item.show.id === showId
+              ? { ...item, personal_review: newStatus }
+              : item,
+          ),
+        );
+      }
+    } catch (err) {
+      console.error("Unexpected error when updating review", err);
+      setError("An unexpected error occured when updating Review");
+    }
+  };
 
   const fetchShowTracked = async () => {
     if (!user) {
@@ -21,7 +68,7 @@ function DisplayTracked({ user }) {
       setLoading(true); // Start loading when the request is made
       const { data, error } = await supabase
         .from("tracked_shows")
-        .select("show:show_id(*)")
+        .select("show:show_id(*), personal_review")
         .eq("user_id", user.id); // Filtering by logged-in user
 
       if (error) {
@@ -31,6 +78,7 @@ function DisplayTracked({ user }) {
       } else {
         setSuccess(true);
         setResults(data); // Set results if data is fetched
+        console.log(data);
       }
     } catch (err) {
       setError("An unexpected error occurred.");
@@ -72,6 +120,10 @@ function DisplayTracked({ user }) {
                     alt={item.show.name}
                   />
                   <p className="">{item.show.overview}</p>
+                  <DropdownMenu
+                    buttonText={numToStatus(item.personal_review)}
+                    items={ratingMenuItems}
+                  />
                   <UntrackShow
                     showId={item.show.id}
                     onSuccess={handleUntrackSuccess}
