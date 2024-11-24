@@ -15,6 +15,7 @@ function DisplayTracked({ user }) {
     { label: "In Progress" },
     { label: "Done" },
     { label: "Planning to Watch" },
+    { labe: "Drop" },
   ];
 
   const numToStatus = (e) => {
@@ -24,7 +25,12 @@ function DisplayTracked({ user }) {
       return "In Progress";
     } else if (e === 2) {
       return "Done";
-    } else {
+    } else if (e === 3){
+      return "Planning to Watch";
+    } else if (e === 4){
+      return "Dropped";
+    }
+    else {
       return "Planning to Watch";
     }
   };
@@ -77,8 +83,14 @@ function DisplayTracked({ user }) {
         setError(error.message); // Set error message
       } else {
         setSuccess(true);
-        setResults(data); // Set results if data is fetched
-        console.log(data);
+
+        //Sort the results
+        const sortOrder = ["In Progress", "Planning to Watch", "Done", "Dropped"];
+        const sortedData = data.sort((a,b) => sortOrder.indexOf(numToStatus(a.personal_review)) - sortOrder.indexOf(numToStatus(b.personal_review)))
+
+
+        setResults(sortedData); // Set results if data is fetched
+        console.log(sortedData);
       }
     } catch (err) {
       setError("An unexpected error occurred.");
@@ -122,7 +134,10 @@ function DisplayTracked({ user }) {
                   <p className="">{item.show.overview}</p>
                   <DropdownMenu
                     buttonText={numToStatus(item.personal_review)}
-                    items={ratingMenuItems}
+                    items={ratingMenuItems.map((rating, index) => ({
+                      ...rating,
+                      onClick: () => updatePersonalStatus(item.show.id, index),
+                    }))}
                   />
                   <UntrackShow
                     showId={item.show.id}
