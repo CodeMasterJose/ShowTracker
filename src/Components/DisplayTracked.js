@@ -25,12 +25,11 @@ function DisplayTracked({ user }) {
       return "In Progress";
     } else if (e === 2) {
       return "Done";
-    } else if (e === 3){
+    } else if (e === 3) {
       return "Planning to Watch";
-    } else if (e === 4){
+    } else if (e === 4) {
       return "Dropped";
-    }
-    else {
+    } else {
       return "Planning to Watch";
     }
   };
@@ -52,8 +51,8 @@ function DisplayTracked({ user }) {
           prevResults.map((item) =>
             item.show.id === showId
               ? { ...item, personal_review: newStatus }
-              : item,
-          ),
+              : item
+          )
         );
       }
     } catch (err) {
@@ -74,7 +73,7 @@ function DisplayTracked({ user }) {
       setLoading(true); // Start loading when the request is made
       const { data, error } = await supabase
         .from("tracked_shows")
-        .select("show:show_id(*), personal_review")
+        .select("show:show_id(*), personal_review, current_episode")
         .eq("user_id", user.id); // Filtering by logged-in user
 
       if (error) {
@@ -85,9 +84,17 @@ function DisplayTracked({ user }) {
         setSuccess(true);
 
         //Sort the results
-        const sortOrder = ["In Progress", "Planning to Watch", "Done", "Dropped"];
-        const sortedData = data.sort((a,b) => sortOrder.indexOf(numToStatus(a.personal_review)) - sortOrder.indexOf(numToStatus(b.personal_review)))
-
+        const sortOrder = [
+          "In Progress",
+          "Planning to Watch",
+          "Done",
+          "Dropped",
+        ];
+        const sortedData = data.sort(
+          (a, b) =>
+            sortOrder.indexOf(numToStatus(a.personal_review)) -
+            sortOrder.indexOf(numToStatus(b.personal_review))
+        );
 
         setResults(sortedData); // Set results if data is fetched
         console.log(sortedData);
@@ -139,6 +146,9 @@ function DisplayTracked({ user }) {
                       onClick: () => updatePersonalStatus(item.show.id, index),
                     }))}
                   />
+                  {/* Conditional button that displays episode number if "in
+                  progress" */}
+                  {item.personal_review === 1 && <p>Hello</p>}
                   <UntrackShow
                     showId={item.show.id}
                     onSuccess={handleUntrackSuccess}
