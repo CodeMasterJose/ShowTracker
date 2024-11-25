@@ -148,7 +148,21 @@ function DisplayTracked({ user }) {
                   />
                   {/* Conditional button that displays episode number if "in
                   progress" */}
-                  {item.personal_review === 1 && <p>Hello</p>}
+                  {item.personal_review === 1 && (
+                    <DropdownMenu
+                      buttonText={`${item.current_episode || 1}`}
+                      items={Array.from(
+                        { length: item.show.number_of_episodes },
+                        (_, index) => ({
+                          label: `${index + 1}`, // Display episode number starting from 1
+                          // onClick: () =>
+                          //   updateCurrentEpisode(item.show.id, index + 1), // Update episode when clicked
+                        })
+                      )}
+                      menuClassName="max-h-48 overflow-y-auto"
+                    />
+                  )}
+
                   <UntrackShow
                     showId={item.show.id}
                     onSuccess={handleUntrackSuccess}
