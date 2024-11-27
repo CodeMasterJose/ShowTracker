@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 import UntrackShow from "./UntrackShow";
 import DropdownMenu from "./DropDownMenu";
+import NumberEpisodeMenu from "./NumberEpisodeMenu";
 
 function DisplayTracked({ user }) {
   // State variables to manage data and errors
@@ -51,8 +52,8 @@ function DisplayTracked({ user }) {
           prevResults.map((item) =>
             item.show.id === showId
               ? { ...item, personal_review: newStatus }
-              : item
-          )
+              : item,
+          ),
         );
       }
     } catch (err) {
@@ -93,7 +94,7 @@ function DisplayTracked({ user }) {
         const sortedData = data.sort(
           (a, b) =>
             sortOrder.indexOf(numToStatus(a.personal_review)) -
-            sortOrder.indexOf(numToStatus(b.personal_review))
+            sortOrder.indexOf(numToStatus(b.personal_review)),
         );
 
         setResults(sortedData); // Set results if data is fetched
@@ -149,20 +150,23 @@ function DisplayTracked({ user }) {
                   {/* Conditional button that displays episode number if "in
                   progress" */}
                   {item.personal_review === 1 && (
-                    <DropdownMenu
-                      buttonText={`${item.current_episode || 1}`}
-                      items={Array.from(
-                        { length: item.show.number_of_episodes },
-                        (_, index) => ({
-                          label: `${index + 1}`, // Display episode number starting from 1
-                          // onClick: () =>
-                          //   updateCurrentEpisode(item.show.id, index + 1), // Update episode when clicked
-                        })
-                      )}
-                      menuClassName="max-h-48 overflow-y-auto"
+                    <NumberEpisodeMenu
+                      currentEpisode={item.current_episode}
+                      episodeCount={item.show.number_of_episodes}
                     />
+                    // <DropdownMenu
+                    //   buttonText={`${item.current_episode || 1}`}
+                    //   items={Array.from(
+                    //     { length: item.show.number_of_episodes },
+                    //     (_, index) => ({
+                    //       label: `${index + 1}`, // Display episode number starting from 1
+                    //       // onClick: () =>
+                    //       //   updateCurrentEpisode(item.show.id, index + 1), // Update episode when clicked
+                    //     })
+                    //   )}
+                    //   menuClassName="max-h-48 overflow-y-auto"
+                    // />
                   )}
-
                   <UntrackShow
                     showId={item.show.id}
                     onSuccess={handleUntrackSuccess}
