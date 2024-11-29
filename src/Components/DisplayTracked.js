@@ -153,6 +153,8 @@ function DisplayTracked({ user }) {
                     <NumberEpisodeMenu
                       currentEpisode={item.current_episode}
                       episodeCount={item.show.number_of_episodes}
+                      user={user}
+                      showId={item.show.id}
                     />
                     // <DropdownMenu
                     //   buttonText={`${item.current_episode || 1}`}
