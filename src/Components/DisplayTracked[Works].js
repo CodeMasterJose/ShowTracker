@@ -10,7 +10,6 @@ function DisplayTracked({ user }) {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true); // Track loading state
-  const [selectedStat, setSelectedStat] = useState("All");
 
   const ratingMenuItems = [
     { label: "Empty" },
@@ -53,8 +52,8 @@ function DisplayTracked({ user }) {
           prevResults.map((item) =>
             item.show.id === showId
               ? { ...item, personal_review: newStatus }
-              : item
-          )
+              : item,
+          ),
         );
       }
     } catch (err) {
@@ -95,7 +94,7 @@ function DisplayTracked({ user }) {
         const sortedData = data.sort(
           (a, b) =>
             sortOrder.indexOf(numToStatus(a.personal_review)) -
-            sortOrder.indexOf(numToStatus(b.personal_review))
+            sortOrder.indexOf(numToStatus(b.personal_review)),
         );
 
         setResults(sortedData); // Set results if data is fetched
@@ -128,91 +127,58 @@ function DisplayTracked({ user }) {
       {/* Show loading message */}
       <ul>
         {results.length > 0 ? (
-          <div className="overflow-x-auto">
-            <div className="px-8 py-2 space-x-4">
-              <button
-                onClick={setSelectedStat("All")}
-                className="bg-slate-400 rounded-lg py-1 px-2 mt-2 outline outline-slate-600"
-              >
-                All Shows
-              </button>
-              <button
-                onClick={setSelectedStat("In Progress")}
-                className="bg-slate-400 rounded-lg py-1 px-2 mt-2"
-              >
-                In Progress
-              </button>
-              <button
-                onClick={setSelectedStat("Planning to Watch")}
-                className="bg-slate-400 rounded-lg py-1 px-2 mt-2"
-              >
-                Planning to Watch
-              </button>
-              <button
-                onClick={setSelectedStat("Done")}
-                className="bg-slate-400 rounded-lg py-1 px-2 mt-2"
-              >
-                Done
-              </button>
-            </div>
-            <table className="table-auto border-collapse border border-gray-300 w-full">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="border border-gray-300 px-4 py-2">Poster</th>
-                  <th className="border border-gray-300 px-4 py-2">Name</th>
-                  <th className="border border-gray-300 px-4 py-2">Overview</th>
-                  <th className="border border-gray-300 px-4 py-2">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {results.map((item) => {
-                  const posterUrl = `https://image.tmdb.org/t/p/w500${item.show.poster_path}`;
+          results.map((item) => {
+            const posterUrl = `https://image.tmdb.org/t/p/w500${item.show.poster_path}`;
 
-                  return (
-                    <tr key={item.show.id}>
-                      {/* Poster */}
-                      <td className="border border-gray-300 px-4 py-2 text-center">
-                        <img
-                          src={posterUrl}
-                          className=" h-auto mx-auto"
-                          alt={item.show.name}
-                        />
-                      </td>
-                      {/* Name */}
-                      <td className="border border-gray-300 px-4 py-2 text-left">
-                        {item.show.name}
-                      </td>
-                      {/* Overview */}
-                      <td className="border border-gray-300 px-4 py-2 text-left">
-                        {item.show.overview}
-                      </td>
-                      {/* Status Dropdown */}
-                      <td className="border border-gray-300 px-4 py-2 text-center">
-                        <DropdownMenu
-                          buttonText={numToStatus(item.personal_review)}
-                          items={ratingMenuItems.map((rating, index) => ({
-                            ...rating,
-                            onClick: () =>
-                              updatePersonalStatus(item.show.id, index),
-                          }))}
-                        />
-                        {item.personal_review === 1 && (
-                          <NumberEpisodeMenu
-                            currentEpisode={item.current_episode}
-                            episodeCount={item.show.number_of_episodes}
-                            user={user}
-                            showId={item.show.id}
-                          />
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+            return (
+              <li key={item.show.id} className="grid p-4">
+                <h3 className="">{item.show.name}</h3>
+                <div className="flex space-x-5">
+                  <img
+                    src={posterUrl}
+                    className="w-24 h-auto"
+                    alt={item.show.name}
+                  />
+                  <p className="">{item.show.overview}</p>
+                  <DropdownMenu
+                    buttonText={numToStatus(item.personal_review)}
+                    items={ratingMenuItems.map((rating, index) => ({
+                      ...rating,
+                      onClick: () => updatePersonalStatus(item.show.id, index),
+                    }))}
+                  />
+                  {/* Conditional button that displays episode number if "in
+                  progress" */}
+                  {item.personal_review === 1 && (
+                    <NumberEpisodeMenu
+                      currentEpisode={item.current_episode}
+                      episodeCount={item.show.number_of_episodes}
+                      user={user}
+                      showId={item.show.id}
+                    />
+                    // <DropdownMenu
+                    //   buttonText={`${item.current_episode || 1}`}
+                    //   items={Array.from(
+                    //     { length: item.show.number_of_episodes },
+                    //     (_, index) => ({
+                    //       label: `${index + 1}`, // Display episode number starting from 1
+                    //       // onClick: () =>
+                    //       //   updateCurrentEpisode(item.show.id, index + 1), // Update episode when clicked
+                    //     })
+                    //   )}
+                    //   menuClassName="max-h-48 overflow-y-auto"
+                    // />
+                  )}
+                  <UntrackShow
+                    showId={item.show.id}
+                    onSuccess={handleUntrackSuccess}
+                  />
+                </div>
+              </li>
+            );
+          })
         ) : (
-          <p>No results found.</p>
+          <p>No tracked shows found.</p> // Show message when no shows are found
         )}
       </ul>
       {error && <p className="text-red-500">{error}</p>}{" "}
