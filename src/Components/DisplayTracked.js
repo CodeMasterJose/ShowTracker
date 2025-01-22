@@ -13,7 +13,7 @@ function DisplayTracked({ user }) {
   const [selectedStat, setSelectedStat] = useState("All");
 
   const ratingMenuItems = [
-    { label: "Empty" },
+    { label: "-" },
     { label: "In Progress" },
     { label: "Done" },
     { label: "Planning to Watch" },
@@ -22,7 +22,7 @@ function DisplayTracked({ user }) {
 
   const numToStatus = (e) => {
     if (e === 0) {
-      return "Empty";
+      return "-";
     } else if (e === 1) {
       return "In Progress";
     } else if (e === 2) {
@@ -129,28 +129,40 @@ function DisplayTracked({ user }) {
       <ul>
         {results.length > 0 ? (
           <div className="overflow-x-auto">
-            <div className="px-8 py-2 space-x-4">
+            <div className="px-8 py-2 space-x-4 ">
               <button
-                onClick={setSelectedStat("All")}
-                className="bg-slate-400 rounded-lg py-1 px-2 mt-2 outline outline-slate-600"
+                onClick={() => setSelectedStat("All")}
+                className={`bg-slate-400 rounded-lg py-1 px-2 mt-2 ${
+                  selectedStat === "All" ? "outline outline-slate-600" : ""
+                } `}
               >
                 All Shows
               </button>
               <button
-                onClick={setSelectedStat("In Progress")}
-                className="bg-slate-400 rounded-lg py-1 px-2 mt-2"
+                onClick={() => setSelectedStat("In Progress")}
+                className={`bg-slate-400 rounded-lg py-1 px-2 mt-2 ${
+                  selectedStat === "In Progress"
+                    ? "outline outline-slate-600"
+                    : ""
+                }`}
               >
                 In Progress
               </button>
               <button
-                onClick={setSelectedStat("Planning to Watch")}
-                className="bg-slate-400 rounded-lg py-1 px-2 mt-2"
+                onClick={() => setSelectedStat("Planning to Watch")}
+                className={`bg-slate-400 rounded-lg py-1 px-2 mt-2 ${
+                  selectedStat === "Planning to Watch"
+                    ? "outline outline-slate-600"
+                    : ""
+                }`}
               >
                 Planning to Watch
               </button>
               <button
-                onClick={setSelectedStat("Done")}
-                className="bg-slate-400 rounded-lg py-1 px-2 mt-2"
+                onClick={() => setSelectedStat("Done")}
+                className={`bg-slate-400 rounded-lg py-1 px-2 mt-2 ${
+                  selectedStat === "Done" ? "outline outline-slate-600" : ""
+                }`}
               >
                 Done
               </button>
@@ -165,49 +177,57 @@ function DisplayTracked({ user }) {
                 </tr>
               </thead>
               <tbody>
-                {results.map((item) => {
-                  const posterUrl = `https://image.tmdb.org/t/p/w500${item.show.poster_path}`;
+                {results
+                  .filter((item) => {
+                    // Show all items if "All" is selected
+                    if (selectedStat === "All") return true;
 
-                  return (
-                    <tr key={item.show.id}>
-                      {/* Poster */}
-                      <td className="border border-gray-300 px-4 py-2 text-center">
-                        <img
-                          src={posterUrl}
-                          className=" h-auto mx-auto"
-                          alt={item.show.name}
-                        />
-                      </td>
-                      {/* Name */}
-                      <td className="border border-gray-300 px-4 py-2 text-left">
-                        {item.show.name}
-                      </td>
-                      {/* Overview */}
-                      <td className="border border-gray-300 px-4 py-2 text-left">
-                        {item.show.overview}
-                      </td>
-                      {/* Status Dropdown */}
-                      <td className="border border-gray-300 px-4 py-2 text-center">
-                        <DropdownMenu
-                          buttonText={numToStatus(item.personal_review)}
-                          items={ratingMenuItems.map((rating, index) => ({
-                            ...rating,
-                            onClick: () =>
-                              updatePersonalStatus(item.show.id, index),
-                          }))}
-                        />
-                        {item.personal_review === 1 && (
-                          <NumberEpisodeMenu
-                            currentEpisode={item.current_episode}
-                            episodeCount={item.show.number_of_episodes}
-                            user={user}
-                            showId={item.show.id}
+                    // Filter items by the selected status
+                    return numToStatus(item.personal_review) === selectedStat;
+                  })
+                  .map((item) => {
+                    const posterUrl = `https://image.tmdb.org/t/p/w500${item.show.poster_path}`;
+
+                    return (
+                      <tr key={item.show.id}>
+                        {/* Poster */}
+                        <td className="border border-gray-300 px-4 py-2 text-center">
+                          <img
+                            src={posterUrl}
+                            className=" h-auto mx-auto"
+                            alt={item.show.name}
                           />
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
+                        </td>
+                        {/* Name */}
+                        <td className="border border-gray-300 px-4 py-2 text-left">
+                          {item.show.name}
+                        </td>
+                        {/* Overview */}
+                        <td className="border border-gray-300 px-4 py-2 text-left">
+                          {item.show.overview}
+                        </td>
+                        {/* Status Dropdown */}
+                        <td className="border border-gray-300 px-4 py-2 text-center">
+                          <DropdownMenu
+                            buttonText={numToStatus(item.personal_review)}
+                            items={ratingMenuItems.map((rating, index) => ({
+                              ...rating,
+                              onClick: () =>
+                                updatePersonalStatus(item.show.id, index),
+                            }))}
+                          />
+                          {item.personal_review === 1 && (
+                            <NumberEpisodeMenu
+                              currentEpisode={item.current_episode}
+                              episodeCount={item.show.number_of_episodes}
+                              user={user}
+                              showId={item.show.id}
+                            />
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
